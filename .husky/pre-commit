@@ -1,0 +1,6 @@
+#!/bin/bash
+
+pnpm syncpack list-mismatches || true
+pnpm syncpack format && git add .
+
+turbo run lint-staged

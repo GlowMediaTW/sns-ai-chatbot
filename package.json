@@ -1,0 +1,47 @@
+{
+  "name": "sns-ai-chatbot",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "prepare": "husky",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "next": "15.2.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "turbo": "^2.4.4"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.0",
+    "@eslint/js": "^9.21.0",
+    "@next/eslint-plugin-next": "^15.2.0",
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+    "@types/node": "^22.13.5",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "eslint": "^9.21.0",
+    "eslint-config-next": "15.2.0",
+    "eslint-config-prettier": "^10.0.2",
+    "eslint-config-turbo": "^2.4.4",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-prettier": "^5.2.3",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.4.3",
+    "prettier": "^3.5.2",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.25.0"
+  },
+  "lint-staged": {
+    "*.{json,md,html,mjs,cjs,js,jsx,ts,tsx}": [
+      "prettier --write"
+    ]
+  },
+  "packageManager": "pnpm@10.5.2",
+  "type": "module"
+}
