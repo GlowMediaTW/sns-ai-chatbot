@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 export const runtime = 'edge';
 
-export const apiSchema = z.object({
+const apiSchema = z.object({
   messages: z.array(
     z.object({
       role: z.union([z.literal('user'), z.literal('assistant')]),
