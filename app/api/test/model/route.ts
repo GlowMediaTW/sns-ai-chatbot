@@ -46,6 +46,9 @@ export const POST = async (request: Request) => {
     model,
     messages: body.messages,
     temperature: body.config.temperature,
+    onError: (error) => {
+      console.error(error);
+    },
   });
 
   return result.toDataStreamResponse();
