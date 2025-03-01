@@ -1,4 +1,5 @@
 import { createGroq } from '@ai-sdk/groq';
+import { createOpenAI } from '@ai-sdk/openai';
 import { WebhookRequestBody, messagingApi, validateSignature } from '@line/bot-sdk';
 import { Redis } from '@upstash/redis';
 import { waitUntil } from '@vercel/functions';
@@ -62,31 +63,39 @@ export const POST = async (
     waitUntil(
       (async () => {
         try {
+          let output = '';
+          let model: Parameters<typeof generateText>[0]['model'];
+          if (connection.model.type === 'groq') {
+            const groq = createGroq({
+              apiKey: connection.model.apiKey,
+            });
+            model = groq(connection.model.modelName);
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          } else if (connection.model.type === 'openai') {
+            const openai = createOpenAI({
+              apiKey: connection.model.apiKey,
+            });
+            model = openai(connection.model.modelName);
+          } else {
+            throw new Error('Invalid model type');
+          }
+
           const webhookEvent = JSON.parse(rawBody) as WebhookRequestBody;
           for (const event of webhookEvent.events) {
             if (event.type === 'message') {
               const messageEvent = event;
               if (messageEvent.message.type === 'text') {
                 const input = messageEvent.message.text;
-
-                let output = '';
-                if (connection.model.type === 'groq') {
-                  const groq = createGroq({
-                    apiKey: connection.model.apiKey,
+                try {
+                  const result = await generateText({
+                    model,
+                    messages: [{ role: 'user', content: input }],
+                    temperature: connection.model.temperature,
                   });
-
-                  try {
-                    const result = await generateText({
-                      model: groq(connection.model.modelName),
-                      messages: [{ role: 'user', content: input }],
-                      temperature: connection.model.temperature,
-                    });
-                    output = result.text;
-                  } catch (error) {
-                    console.error(error);
-                    output =
-                      'An error occurred. Please try again later or check your configuration.';
-                  }
+                  output = result.text;
+                } catch (error) {
+                  console.error(error);
+                  output = 'An error occurred. Please try again later or check your configuration.';
                 }
 
                 const client = new messagingApi.MessagingApiClient({
