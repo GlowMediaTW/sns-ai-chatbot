@@ -1,5 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": [".env.development.local", ".env.production.local"],
   "tasks": {
     "build": {
       "inputs": [

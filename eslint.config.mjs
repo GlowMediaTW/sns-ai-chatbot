@@ -1,7 +1,6 @@
 import { FlatCompat } from '@eslint/eslintrc';
 import js from '@eslint/js';
 import eslintConfigPrettier from 'eslint-config-prettier';
-import turboConfig from 'eslint-config-turbo/flat';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import { dirname } from 'path';
 import { config as tsEslintConfig, configs as tsEslintConfigs } from 'typescript-eslint';
@@ -16,7 +15,6 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...tsEslintConfig(
-    ...turboConfig,
     js.configs.recommended,
     eslintPluginPrettierRecommended,
     eslintConfigPrettier,
