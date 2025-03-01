@@ -4,8 +4,6 @@ import { z } from 'zod';
 
 import SettingsComponent from './settings';
 
-export const runtime = 'edge';
-
 const redis = new Redis({
   url: process.env.KV_REST_API_URL,
   token: process.env.KV_REST_API_READ_ONLY_TOKEN,

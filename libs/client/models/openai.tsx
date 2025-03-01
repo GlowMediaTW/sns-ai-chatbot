@@ -1,5 +1,5 @@
-import Form from 'antd/lib/form';
-import Input from 'antd/lib/input';
+import Form from 'antd/es/form';
+import Input from 'antd/es/input';
 import { z } from 'zod';
 
 import { modelSchema } from '../../schemas';

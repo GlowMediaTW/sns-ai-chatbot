@@ -5,8 +5,6 @@ import { z } from 'zod';
 import ConnectionNotFound from './connection-not-found';
 import ConnectionSettings from './connection-settings';
 
-export const runtime = 'edge';
-
 const redis = new Redis({
   url: process.env.KV_REST_API_URL,
   token: process.env.KV_REST_API_READ_ONLY_TOKEN,

@@ -7,6 +7,7 @@ import Alert from 'antd/es/alert';
 import Button from 'antd/es/button';
 import Card from 'antd/es/card';
 import Form from 'antd/es/form';
+import { useForm } from 'antd/es/form/Form';
 import Input from 'antd/es/input';
 import message from 'antd/es/message';
 import Modal from 'antd/es/modal';
@@ -53,6 +54,9 @@ export default function ConnectionSettings({
     },
   });
 
+  const [modelForm] = useForm<z.infer<typeof modelSchema>>();
+  const [appForm] = useForm<z.infer<typeof appSchema>>();
+
   useEffect(() => {
     setPageOrigin(window.location.origin);
   }, []);
@@ -84,8 +88,8 @@ export default function ConnectionSettings({
               onClick={async () => {
                 const body: z.infer<typeof updateConnectionSchema> = {
                   name: connection.name,
-                  model: connection.model,
-                  app: connection.app,
+                  model: { ...connection.model, ...modelForm.getFieldsValue() },
+                  app: { ...connection.app, ...appForm.getFieldsValue() },
                 };
                 try {
                   setIsSavingConnection(true);
@@ -204,6 +208,7 @@ export default function ConnectionSettings({
               className="h-100"
             >
               <Form<z.infer<typeof modelSchema>>
+                form={modelForm}
                 layout="vertical"
                 onFinish={async (data) => {
                   const newModelConfig = {
@@ -282,6 +287,7 @@ export default function ConnectionSettings({
           }
         >
           <Form<z.infer<typeof appSchema>>
+            form={appForm}
             layout="vertical"
             onFinish={async (data) => {
               const newAppConfig = {
