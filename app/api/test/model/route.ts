@@ -5,6 +5,7 @@ import { streamText } from 'ai';
 import { z } from 'zod';
 
 export const runtime = 'edge';
+export const preferredRegion = 'hnd1';
 
 const apiSchema = z.object({
   messages: z.array(

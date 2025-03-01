@@ -8,6 +8,8 @@ import { z } from 'zod';
 
 import { connectionSchema } from '../../../../libs/schemas';
 
+export const preferredRegion = 'hnd1';
+
 export const POST = async (
   request: Request,
   {
