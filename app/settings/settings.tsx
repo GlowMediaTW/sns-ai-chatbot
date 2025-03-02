@@ -4,7 +4,6 @@ import { appSchema, connectionSchema, modelSchema } from '@/libs/schemas';
 import Button from 'antd/es/button';
 import Input from 'antd/es/input';
 import Modal from 'antd/es/modal';
-import Result from 'antd/es/result';
 import Steps from 'antd/es/steps';
 import Table from 'antd/es/table';
 import { nanoid } from 'nanoid';
@@ -16,6 +15,7 @@ import { z } from 'zod';
 import { clientAppRecord, clientModelRecord } from '../../libs/client';
 import Step0 from './step-0';
 import Step1 from './step-1';
+import Step2 from './step-2';
 
 export default function SettingsComponent({
   connections: initialConnections,
@@ -29,6 +29,7 @@ export default function SettingsComponent({
   const [isNewConnection, setIsNewConnection] = useState(false);
   const [newConnectionId, setNewConnectionId] = useState('');
   const [currentStep, setCurrentStep] = useState(0);
+  const [newConnection, setNewConnection] = useState<z.infer<typeof connectionSchema> | null>(null);
 
   const [modelConfig, setModelConfig] = useState<z.infer<typeof modelSchema> | null>(null);
   const [appConfig, setAppConfig] = useState<z.infer<typeof appSchema> | null>(null);
@@ -64,7 +65,7 @@ export default function SettingsComponent({
                 title: 'Connect an App',
               },
               {
-                title: 'Finish',
+                title: 'Test Connection',
               },
             ]}
           />
@@ -86,24 +87,11 @@ export default function SettingsComponent({
               connectionName={newConnectionName}
               connections={connections}
               setConnections={setConnections}
+              setNewConnection={setNewConnection}
             />
           )}
-          {currentStep === 2 && (
-            <div className="mt-5 w-100 d-flex flex-column justify-content-center align-items-center">
-              <Result
-                status="success"
-                title={`Successfully created the connection '${newConnectionName}'`}
-                subTitle="Try to send a message on your app to test your connection."
-              />
-              <Button
-                type="primary"
-                onClick={() => {
-                  setIsNewConnection(false);
-                }}
-              >
-                Back to Connections
-              </Button>
-            </div>
+          {currentStep === 2 && newConnection !== null && (
+            <Step2 connection={newConnection} setIsNewConnection={setIsNewConnection} />
           )}
         </>
       ) : (
@@ -144,6 +132,7 @@ export default function SettingsComponent({
                     setModelConfig(null);
                     setAppConfig(null);
                     setIsNewConnection(true);
+                    setNewConnection(null);
                     setNewConnectionId(nanoid());
                   }}
                 >

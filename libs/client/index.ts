@@ -1,3 +1,4 @@
+import { DiscordClientApp } from './apps/discord';
 import { LineClientApp } from './apps/line';
 import { GroqClientModel } from './models/groq';
 import { OpenAIClientModel } from './models/openai';
@@ -17,4 +18,5 @@ export const clientModelRecord = {
 
 export const clientAppRecord = {
   line: new LineClientApp(),
+  discord: new DiscordClientApp(),
 };

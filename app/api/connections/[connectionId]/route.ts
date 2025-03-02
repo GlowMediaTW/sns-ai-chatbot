@@ -1,7 +1,6 @@
-import { connectionSchema, updateConnectionSchema } from '@/libs/schemas';
-import { Redis } from '@upstash/redis';
+import { updateConnectionSchema } from '@/libs/schemas';
+import { Store } from '@/libs/server/store';
 import { NextResponse } from 'next/server';
-import { z } from 'zod';
 
 export const runtime = 'edge';
 
@@ -26,18 +25,9 @@ export const PATCH = async (
   }
   const body = bodyParsedResult.data;
 
-  const redis = new Redis({
-    url: process.env.KV_REST_API_URL,
-    token: process.env.KV_REST_API_TOKEN,
-  });
+  const store = new Store(false);
+  const connections = await store.getConnections();
 
-  const connections: z.infer<typeof connectionSchema>[] = await redis
-    .get('connections')
-    .then((data) => z.array(connectionSchema).parse(data))
-    .catch((error: unknown) => {
-      console.error(error);
-      return [];
-    });
   const oldConnectionIndex = connections.findIndex((c) => c.id === connectionId);
   if (oldConnectionIndex === -1) {
     return new Response('Connection not found', {
@@ -54,7 +44,7 @@ export const PATCH = async (
   };
   updatedConnections[oldConnectionIndex] = updatedConnection;
 
-  await redis.set('connections', updatedConnections);
+  await store.setConnections(updatedConnections);
 
   return NextResponse.json(updatedConnection, { status: 201 });
 };
@@ -76,18 +66,9 @@ export const DELETE = async (
     });
   }
 
-  const redis = new Redis({
-    url: process.env.KV_REST_API_URL,
-    token: process.env.KV_REST_API_TOKEN,
-  });
+  const store = new Store(false);
+  const connections = await store.getConnections();
 
-  const connections: z.infer<typeof connectionSchema>[] = await redis
-    .get('connections')
-    .then((data) => z.array(connectionSchema).parse(data))
-    .catch((error: unknown) => {
-      console.error(error);
-      return [];
-    });
   const oldConnectionIndex = connections.findIndex((c) => c.id === connectionId);
   if (oldConnectionIndex === -1) {
     return new Response('Connection not found', {
@@ -97,7 +78,7 @@ export const DELETE = async (
 
   const updatedConnections = connections.filter((c) => c.id !== connectionId);
 
-  await redis.set('connections', updatedConnections);
+  await store.setConnections(updatedConnections);
 
   return NextResponse.json({ id: connectionId }, { status: 200 });
 };

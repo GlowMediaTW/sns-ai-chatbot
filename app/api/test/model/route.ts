@@ -1,10 +1,8 @@
 import { modelSchema } from '@/libs/schemas';
-import { createGroq } from '@ai-sdk/groq';
-import { createOpenAI } from '@ai-sdk/openai';
-import { streamText } from 'ai';
 import { z } from 'zod';
 
-export const runtime = 'edge';
+import { serverModelRecord } from '../../../../libs/server';
+
 export const preferredRegion = 'hnd1';
 
 const apiSchema = z.object({
@@ -27,30 +25,11 @@ export const POST = async (request: Request) => {
   }
   const body = bodyParsedResult.data;
 
-  let model: Parameters<typeof streamText>[0]['model'];
-  if (body.config.type === 'groq') {
-    const groq = createGroq({
-      apiKey: body.config.apiKey,
-    });
-    model = groq(body.config.modelName);
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  } else if (body.config.type === 'openai') {
-    const openai = createOpenAI({
-      apiKey: body.config.apiKey,
-    });
-    model = openai(body.config.modelName);
-  } else {
+  if (!(body.config.type in serverModelRecord)) {
     throw new Error('Invalid model type');
   }
 
-  const result = streamText({
-    model,
-    messages: body.messages,
-    temperature: body.config.temperature,
-    onError: (error) => {
-      console.error(error);
-    },
-  });
+  const serverModel = new serverModelRecord[body.config.type](body.config);
 
-  return result.toDataStreamResponse();
+  return serverModel.stream(body.messages);
 };

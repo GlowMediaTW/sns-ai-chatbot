@@ -273,6 +273,7 @@ export default function ConnectionSettings({
           </div>
         </div>
         <Card
+          className="mb-3"
           title={
             <div className="d-flex align-items-center">
               <Image
@@ -297,12 +298,27 @@ export default function ConnectionSettings({
               setConnection({ ...connection, app: newAppConfig });
             }}
           >
-            {clientApp.getForm(connection.app, {
-              connectionId: connection.id,
-              pageOrigin,
-              messageApi,
-            })}
+            {clientApp.getForm(connection.app)}
           </Form>
+        </Card>
+        <Card
+          title={
+            <div className="d-flex align-items-center">
+              <Image
+                className="me-2"
+                src={clientApp.icon}
+                alt={clientApp.label}
+                width={24}
+                height={24}
+              />
+              <div>{clientApp.label} App Test</div>
+            </div>
+          }
+        >
+          {clientApp.getPostTutorial(connection, {
+            pageOrigin,
+            messageApi,
+          })}
         </Card>
       </div>
     </>

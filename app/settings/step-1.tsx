@@ -10,7 +10,7 @@ import Form from 'antd/es/form';
 import message from 'antd/es/message';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
+import { Dispatch, SetStateAction, useMemo, useState } from 'react';
 import Markdown from 'react-markdown';
 import { z } from 'zod';
 
@@ -23,6 +23,7 @@ export default function Step1({
   connectionName,
   connections,
   setConnections,
+  setNewConnection,
 }: {
   setCurrentStep: Dispatch<SetStateAction<number>>;
   appConfig: z.infer<typeof appSchema> | null;
@@ -32,19 +33,15 @@ export default function Step1({
   connectionName: string;
   connections: z.infer<typeof connectionSchema>[];
   setConnections: Dispatch<SetStateAction<z.infer<typeof connectionSchema>[]>>;
+  setNewConnection: Dispatch<SetStateAction<z.infer<typeof connectionSchema> | null>>;
 }) {
   const [messageApi, contextHolder] = message.useMessage();
-  const [pageOrigin, setPageOrigin] = useState('');
   const [isSavingConnection, setIsSavingConnection] = useState(false);
 
   const clientApp = useMemo(
     () => (appConfig !== null ? clientAppRecord[appConfig.type] : null),
     [appConfig],
   );
-
-  useEffect(() => {
-    setPageOrigin(window.location.origin);
-  }, []);
 
   if (appConfig === null || clientApp === null) {
     return (
@@ -176,6 +173,7 @@ export default function Step1({
               }
               const newConnection = connectionSchema.parse((await res.json()) as unknown);
               setConnections([...connections, newConnection]);
+              setNewConnection(newConnection);
               setCurrentStep(2);
               messageApi.success('Connection created successfully');
             } catch (error) {
@@ -186,11 +184,7 @@ export default function Step1({
             }
           }}
         >
-          {clientApp.getForm(appConfig, {
-            connectionId,
-            pageOrigin,
-            messageApi,
-          })}
+          {clientApp.getForm(appConfig)}
           <Form.Item>
             <Button type="primary" htmlType="submit" block loading={isSavingConnection}>
               Save

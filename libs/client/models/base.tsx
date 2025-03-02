@@ -1,7 +1,6 @@
+import { modelSchema } from '@/libs/schemas';
 import type { ReactNode } from 'react';
 import { z } from 'zod';
-
-import { modelSchema } from '../../schemas';
 
 export abstract class BaseClientModel<T extends string> {
   public abstract readonly type: T;

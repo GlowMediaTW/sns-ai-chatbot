@@ -1,8 +1,7 @@
+import { appSchema, connectionSchema } from '@/libs/schemas';
 import { MessageInstance } from 'antd/es/message/interface';
 import type { ReactNode } from 'react';
 import { z } from 'zod';
-
-import { appSchema } from '../../schemas';
 
 export abstract class BaseClientApp<T extends string> {
   public abstract readonly type: T;
@@ -12,10 +11,11 @@ export abstract class BaseClientApp<T extends string> {
 
   public abstract getDefaultConfig: () => Extract<z.infer<typeof appSchema>, { type: T }>;
 
-  public abstract getForm: (
-    config: z.infer<typeof appSchema>,
+  public abstract getForm: (config: z.infer<typeof appSchema>) => ReactNode;
+
+  public abstract getPostTutorial: (
+    connection: z.infer<typeof connectionSchema>,
     props: {
-      connectionId: string;
       pageOrigin: string;
       messageApi: MessageInstance;
     },

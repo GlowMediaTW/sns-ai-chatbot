@@ -15,6 +15,8 @@
     "antd": "^5.24.2",
     "axios": "^1.8.1",
     "bootstrap": "^5.3.3",
+    "discord-api-types": "^0.37.119",
+    "discord.js": "^14.18.0",
     "nanoid": "^5.1.2",
     "next": "15.2.0",
     "next-auth": "5.0.0-beta.25",
@@ -22,6 +24,7 @@
     "react-dom": "^19.0.0",
     "react-markdown": "^10.0.0",
     "turbo": "^2.4.4",
+    "tweetnacl": "^1.0.3",
     "zod": "^3.24.2"
   },
   "devDependencies": {

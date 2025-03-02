@@ -25,6 +25,11 @@ export const appSchema = z.discriminatedUnion('type', [
     channelAccessToken: z.string(),
     channelSecret: z.string(),
   }),
+  z.object({
+    type: z.literal('discord'),
+    applicationId: z.string(),
+    publicKey: z.string(),
+  }),
 ]);
 
 export const connectionSchema = z.object({
@@ -42,4 +47,9 @@ export const updateConnectionSchema = connectionSchema.omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+});
+
+export const connectionSettingsSchema = z.object({
+  type: z.literal('register-discord-commands'),
+  botToken: z.string(),
 });

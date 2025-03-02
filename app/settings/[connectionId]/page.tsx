@@ -1,14 +1,7 @@
-import { connectionSchema } from '@/libs/schemas';
-import { Redis } from '@upstash/redis';
-import { z } from 'zod';
+import { Store } from '@/libs/server/store';
 
 import ConnectionNotFound from './connection-not-found';
 import ConnectionSettings from './connection-settings';
-
-const redis = new Redis({
-  url: process.env.KV_REST_API_URL,
-  token: process.env.KV_REST_API_READ_ONLY_TOKEN,
-});
 
 export default async function ConnectionSettingsPage({
   params,
@@ -18,13 +11,10 @@ export default async function ConnectionSettingsPage({
   }>;
 }) {
   const { connectionId } = await params;
-  const connections = await redis
-    .get('connections')
-    .then((data) => z.array(connectionSchema).parse(data))
-    .catch((error: unknown) => {
-      console.error(error);
-      return [];
-    });
+
+  const store = new Store(true);
+  const connections = await store.getConnections();
+
   const connection = connections.find((c) => c.id === connectionId) ?? null;
   if (connection === null) {
     return <ConnectionNotFound />;

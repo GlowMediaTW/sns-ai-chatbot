@@ -1,10 +1,10 @@
+import { appSchema, connectionSchema } from '@/libs/schemas';
 import LinkOutlined from '@ant-design/icons/LinkOutlined';
 import Form from 'antd/es/form';
 import Input from 'antd/es/input';
 import { MessageInstance } from 'antd/es/message/interface';
 import { z } from 'zod';
 
-import { appSchema } from '../../schemas';
 import { BaseClientApp } from './base';
 
 export class LineClientApp implements BaseClientApp<'line'> {
@@ -36,67 +36,36 @@ export class LineClientApp implements BaseClientApp<'line'> {
 
 8. Copy the Channel secret and paste them into the \`Channel Secret\` field on this page.
 
-9. Copy the Webhook URL from this page and paste it into the Webhook URL field on the LINE official account settings page, and then save the settings.
-
 ![](/tutorials/line/6.png)
+
+9. Click the Reply Settings button in the sidebar, and enable the Chat and Webhook feature.
 
 ![](/tutorials/line/7.png)
 
-10. Click the Reply Settings button in the sidebar, and enable the Chat and Webhook feature.
+10. Sign in at [LINE Developer Console](https://developers.line.biz/console/).
+ 
+11. Find and click the bot you've just created.
 
 ![](/tutorials/line/8.png)
 
-11. Sign in at [LINE Developer Console](https://developers.line.biz/console/).
- 
-12. Find and click the bot you've just created.
+12. Scroll down the Messaging API tab, and click the Issue button to generate a new channel access token.
 
 ![](/tutorials/line/9.png)
 
-13. Scroll down the Messaging API tab, and click the Issue button to generate a new channel access token.
+13. Copy the channel access token and paste it into the \`Channel Access Token\` field on this page.`;
 
-![](/tutorials/line/10.png)
-
-14. Copy the channel access token and paste it into the \`Channel Access Token\` field on this page.`;
-
-  public getDefaultConfig = () =>
-    ({
+  public getDefaultConfig() {
+    return {
       type: 'line',
       channelAccessToken: '',
       channelSecret: '',
-    }) as const;
+    } as const;
+  }
 
-  public getForm(
-    _config: z.infer<typeof appSchema>,
-    {
-      connectionId,
-      pageOrigin,
-      messageApi,
-    }: {
-      connectionId: string;
-      pageOrigin: string;
-      messageApi: MessageInstance;
-    },
-  ) {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-    const config = _config as z.infer<typeof appSchema>;
+  public getForm(_config: z.infer<typeof appSchema>) {
+    const config = _config as Extract<z.infer<typeof appSchema>, { type: 'line' }>;
     return (
       <>
-        <Form.Item label="Webhook URL">
-          <Input
-            readOnly
-            value={`${pageOrigin}/api/webhooks/${connectionId}`}
-            prefix={
-              <LinkOutlined
-                role="button"
-                className="text-primary"
-                onClick={async () => {
-                  await navigator.clipboard.writeText(`${pageOrigin}/api/webhooks/${connectionId}`);
-                  messageApi.success('Webhook URL copied to clipboard');
-                }}
-              />
-            }
-          />
-        </Form.Item>
         <Form.Item
           label="Channel Access Token"
           name="channelAccessToken"
@@ -113,6 +82,55 @@ export class LineClientApp implements BaseClientApp<'line'> {
         >
           <Input.Password placeholder="Channel Secret" />
         </Form.Item>
+      </>
+    );
+  }
+
+  public getPostTutorial(
+    connection: z.infer<typeof connectionSchema>,
+    {
+      pageOrigin,
+      messageApi,
+    }: {
+      pageOrigin: string;
+      messageApi: MessageInstance;
+    },
+  ) {
+    return (
+      <>
+        <p>
+          1. Copy the Webhook URL from this page and paste it into the Webhook URL field on the LINE
+          official account settings page, and then save the settings.
+        </p>
+        <Input
+          readOnly
+          value={`${pageOrigin}/api/webhooks/${connection.id}`}
+          prefix={
+            <LinkOutlined
+              role="button"
+              className="text-primary"
+              onClick={async () => {
+                await navigator.clipboard.writeText(`${pageOrigin}/api/webhooks/${connection.id}`);
+                messageApi.success('Webhook URL copied to clipboard');
+              }}
+            />
+          }
+        />
+        <div className="my-2">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/tutorials/line/10.png"
+            alt="line_10"
+            style={{
+              maxWidth: '100%',
+              maxHeight: '16rem',
+            }}
+          />
+        </div>
+        <p>
+          2. Try to send a message to your LINE official account. If you receive an AI response,
+          then your LINE official account is successfully connected to the AI model.
+        </p>
       </>
     );
   }

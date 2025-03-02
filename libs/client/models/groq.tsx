@@ -1,8 +1,8 @@
+import { modelSchema } from '@/libs/schemas';
 import Form from 'antd/es/form';
 import Input from 'antd/es/input';
 import { z } from 'zod';
 
-import { modelSchema } from '../../schemas';
 import { BaseClientModel } from './base';
 
 export class GroqClientModel implements BaseClientModel<'groq'> {
