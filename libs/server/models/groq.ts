@@ -1,6 +1,6 @@
 import { modelSchema } from '@/libs/schemas';
 import { createGroq } from '@ai-sdk/groq';
-import { generateText, streamText } from 'ai';
+import { CoreMessage, generateText, streamText } from 'ai';
 import { z } from 'zod';
 
 import { BaseServerModel } from './base';
@@ -14,7 +14,7 @@ export class GroqServerModel implements BaseServerModel<'groq'> {
     this.config = config as Extract<z.infer<typeof modelSchema>, { type: 'groq' }>;
   }
 
-  public stream(messages: Parameters<typeof streamText>[0]['messages']) {
+  public stream(messages: CoreMessage[]) {
     const model = this.getModel();
     const result = streamText({
       model,

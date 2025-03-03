@@ -1,4 +1,5 @@
 import { appSchema, modelSchema } from '@/libs/schemas';
+import { CoreMessage } from 'ai';
 import {
   APIApplicationCommandInteractionDataStringOption,
   APIInteraction,
@@ -19,6 +20,7 @@ import nacl from 'tweetnacl';
 import { z } from 'zod';
 
 import { BaseServerModel } from '../models/base';
+import { Store } from '../store';
 import { BaseServerApp } from './base';
 
 export class DiscordServerApp implements BaseServerApp<'discord'> {
@@ -108,7 +110,12 @@ export class DiscordServerApp implements BaseServerApp<'discord'> {
         throw new Error('Invalid command options');
       }
       const input = messageOption.value;
-      const { output } = await this.model.invoke([{ role: 'user', content: input }]);
+      const store = new Store(false);
+      const channelId = this.body.channel.id;
+      const chatHistory = await store.loadChat(channelId);
+      const newMessages: CoreMessage[] = [{ role: 'user', content: input }];
+      const { output } = await this.model.invoke([...chatHistory, ...newMessages]);
+      await store.saveChat(channelId, newMessages);
 
       for (let chunkIndex = 0; chunkIndex < Math.ceil(output.length / 2000); chunkIndex += 1) {
         if (chunkIndex > 0) {

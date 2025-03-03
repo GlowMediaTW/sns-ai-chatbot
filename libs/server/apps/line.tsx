@@ -1,9 +1,11 @@
 import { appSchema, modelSchema } from '@/libs/schemas';
 import { WebhookRequestBody, messagingApi, validateSignature } from '@line/bot-sdk';
+import { CoreMessage } from 'ai';
 import { headers } from 'next/headers';
 import { z } from 'zod';
 
 import { BaseServerModel } from '../models/base';
+import { Store } from '../store';
 import { BaseServerApp } from './base';
 
 export class LineServerApp implements BaseServerApp<'line'> {
@@ -54,9 +56,19 @@ export class LineServerApp implements BaseServerApp<'line'> {
     for (const event of this.body.events) {
       if (event.type === 'message') {
         const messageEvent = event;
+        const channelId =
+          messageEvent.source.type === 'group'
+            ? messageEvent.source.groupId
+            : messageEvent.source.type === 'room'
+              ? messageEvent.source.roomId
+              : messageEvent.source.userId;
         if (messageEvent.message.type === 'text') {
           const input = messageEvent.message.text;
-          const { output } = await this.model.invoke([{ role: 'user', content: input }]);
+          const store = new Store(false);
+          const chatHistory = await store.loadChat(channelId);
+          const newMessages: CoreMessage[] = [{ role: 'user', content: input }];
+          const { output } = await this.model.invoke([...chatHistory, ...newMessages]);
+          await store.saveChat(channelId, newMessages);
 
           const client = new messagingApi.MessagingApiClient({
             channelAccessToken: this.config.channelAccessToken,
