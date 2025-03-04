@@ -63,6 +63,16 @@ export class LineServerApp implements BaseServerApp<'line'> {
               ? messageEvent.source.roomId
               : messageEvent.source.userId;
         if (messageEvent.message.type === 'text') {
+          const client = new messagingApi.MessagingApiClient({
+            channelAccessToken: this.config.channelAccessToken,
+          });
+
+          if (messageEvent.source.type === 'user') {
+            await client.showLoadingAnimation({
+              chatId: messageEvent.source.userId,
+            });
+          }
+
           const input = messageEvent.message.text;
           const store = new Store(false);
           const chatHistory = await store.loadChat(channelId);
@@ -70,18 +80,17 @@ export class LineServerApp implements BaseServerApp<'line'> {
           const { output } = await this.model.invoke([...chatHistory, ...newMessages]);
           await store.saveChat(channelId, newMessages);
 
-          const client = new messagingApi.MessagingApiClient({
-            channelAccessToken: this.config.channelAccessToken,
-          });
+          const chunks: string[] = [];
+          for (let i = 0; i < output.length; i += 5000) {
+            chunks.push(output.slice(i, i + 5000));
+          }
 
           await client.replyMessage({
             replyToken: messageEvent.replyToken,
-            messages: [
-              {
-                type: 'text',
-                text: output,
-              },
-            ],
+            messages: chunks.slice(0, 5).map((chunk) => ({
+              type: 'text',
+              text: chunk,
+            })),
           });
           return output;
         }
