@@ -6,7 +6,7 @@ import { BaseModelSchema } from '../../schemas';
 import { BaseServerModel } from '../base-server';
 import { schema } from './schema';
 
-export class GroqServerModel implements BaseServerModel<'groq', typeof schema> {
+export default class GroqServerModel implements BaseServerModel<'groq', typeof schema> {
   public readonly type = 'groq';
 
   public config: BaseModelSchema & z.infer<typeof schema>;

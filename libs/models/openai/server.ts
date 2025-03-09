@@ -6,7 +6,7 @@ import { BaseModelSchema } from '../../schemas';
 import { BaseServerModel } from '../base-server';
 import { schema } from './schema';
 
-export class OpenAIServerModel implements BaseServerModel<'openai', typeof schema> {
+export default class OpenAIServerModel implements BaseServerModel<'openai', typeof schema> {
   public readonly type = 'openai';
 
   public config: BaseModelSchema & z.infer<typeof schema>;

@@ -7,9 +7,11 @@ export const serverModelRecord = {} as Record<
   new (...args: ConstructorParameters<typeof BaseServerModel>) => BaseServerModel<ModelType>
 >;
 for (const model of models) {
-  serverModelRecord[model] = (await import(
-    `./models/${model}/server.ts`
-  )) as (typeof serverModelRecord)[ModelType];
+  serverModelRecord[model] = (
+    (await import(`./models/${model}/server.ts`)) as {
+      default: (typeof serverModelRecord)[ModelType];
+    }
+  ).default;
 }
 
 export const serverAppRecord = {} as Record<
@@ -17,7 +19,7 @@ export const serverAppRecord = {} as Record<
   new (...args: ConstructorParameters<typeof BaseServerApp>) => BaseServerApp<AppType>
 >;
 for (const app of apps) {
-  serverAppRecord[app] = (await import(
-    `./apps/${app}/server.ts`
-  )) as (typeof serverAppRecord)[AppType];
+  serverAppRecord[app] = (
+    (await import(`./apps/${app}/server.ts`)) as { default: (typeof serverAppRecord)[AppType] }
+  ).default;
 }

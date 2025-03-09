@@ -9,7 +9,7 @@ import { Store } from '../../store';
 import { BaseServerApp } from '../base-server';
 import { schema } from './schema';
 
-export class LineServerApp implements BaseServerApp<'line', typeof schema> {
+export default class LineServerApp implements BaseServerApp<'line', typeof schema> {
   public readonly type = 'line';
 
   public config: z.infer<typeof schema>;
