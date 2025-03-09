@@ -1,4 +1,4 @@
-import { Store } from '@/libs/server/store';
+import { Store } from '@/libs/store';
 import { waitUntil } from '@vercel/functions';
 
 import { serverAppRecord, serverModelRecord } from '../../../../libs/server';

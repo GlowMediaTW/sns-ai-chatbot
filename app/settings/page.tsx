@@ -1,11 +1,11 @@
-import { Store } from '@/libs/server/store';
+import { Store } from '@/libs/store';
 
-import SettingsComponent from './settings';
+import Settings from './_components/Settings';
 
 export default async function SettingsPage() {
   const store = new Store(true);
   const connections = await store.getConnections();
   console.log({ connections });
 
-  return <SettingsComponent connections={connections} />;
+  return <Settings connections={connections} />;
 }

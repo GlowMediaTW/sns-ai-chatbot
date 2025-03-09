@@ -1,7 +1,7 @@
-import { Store } from '@/libs/server/store';
+import { Store } from '@/libs/store';
 
-import ConnectionNotFound from './connection-not-found';
-import ConnectionSettings from './connection-settings';
+import ConnectionNotFound from './_components/ConnectionNotFound';
+import ConnectionSettings from './_components/ConnectionSettings';
 
 export default async function ConnectionSettingsPage({
   params,
@@ -16,9 +16,10 @@ export default async function ConnectionSettingsPage({
   const connections = await store.getConnections();
 
   const connection = connections.find((c) => c.id === connectionId) ?? null;
-  if (connection === null) {
-    return <ConnectionNotFound />;
-  }
 
-  return <ConnectionSettings connection={connection} />;
+  return connection === null ? (
+    <ConnectionNotFound />
+  ) : (
+    <ConnectionSettings connection={connection} />
+  );
 }

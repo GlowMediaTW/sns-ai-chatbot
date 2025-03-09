@@ -1,5 +1,5 @@
 import { updateConnectionSchema } from '@/libs/schemas';
-import { Store } from '@/libs/server/store';
+import { Store } from '@/libs/store';
 import { NextResponse } from 'next/server';
 
 export const runtime = 'edge';

@@ -1,0 +1,7 @@
+import { z } from 'zod';
+
+export const schema = z.object({
+  type: z.literal('openai'),
+  apiKey: z.string(),
+  modelName: z.string(),
+});
