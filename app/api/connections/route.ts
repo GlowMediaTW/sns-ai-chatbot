@@ -2,8 +2,6 @@ import { rawConnectionSchema } from '@/libs/schemas';
 import { Store } from '@/libs/store';
 import { NextResponse } from 'next/server';
 
-export const runtime = 'edge';
-
 export const POST = async (request: Request) => {
   const rawBody = (await request.json()) as unknown;
   const bodyParsedResult = rawConnectionSchema.safeParse(rawBody);

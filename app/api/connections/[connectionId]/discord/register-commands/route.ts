@@ -11,8 +11,6 @@ import {
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-export const runtime = 'edge';
-
 export const POST = async (
   request: Request,
   {

@@ -2,8 +2,6 @@ import { updateConnectionSchema } from '@/libs/schemas';
 import { Store } from '@/libs/store';
 import { NextResponse } from 'next/server';
 
-export const runtime = 'edge';
-
 export const PATCH = async (
   request: Request,
   {
