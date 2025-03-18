@@ -11,6 +11,9 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'SNS AI Chatbot',
   description: 'Easily connect your SNS app with AI to launch your AI chatbot.',
+  verification: {
+    google: '2mKNWgX4OXy7j6Bmhf37edNJ1jXgXCbYObAfdMS2mqk',
+  },
 };
 
 export default function RootLayout({ children }: PropsWithChildren) {
